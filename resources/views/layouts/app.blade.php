@@ -21,6 +21,12 @@
     <button class="btn btn-link btn-sm" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
+    <form action="{{ route('logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="btn btn-primary ">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form>
 </nav>
 
 <div id="layoutSidenav">
@@ -48,9 +54,14 @@
                         Items
                     </a>
 
-                    <a class="nav-link {{ request()->is('lendings') ? 'active' : '' }}" href="/lendings">
+                    <!-- <a class="nav-link {{ request()->is('lendings') ? 'active' : '' }}" href="/lendings">
                         <i class="fas fa-handshake me-2"></i>
                         Lending
+                    </a> -->
+
+                     <a class="nav-link {{ request()->is('users') ? 'active' : '' }}" href="/users">
+                        <i class="fas fa-user me-2"></i>
+                        User
                     </a>
 
                 </div>

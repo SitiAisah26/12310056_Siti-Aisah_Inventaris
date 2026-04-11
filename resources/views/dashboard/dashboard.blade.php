@@ -9,7 +9,7 @@
     <div class="p-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="40">
-            <h5 class="mb-0">Welcome, {{ Auth::user()->role == 'admin' ? 'Admin Wikrama' : 'Operator Wikrama' }}</h5>
+            <h5 class="mb-0">Welcome, Admin</h5>
         </div>
 
         <div>
@@ -27,4 +27,3 @@
 <div style="height:40px;"></div>
 
 @endsection
-
