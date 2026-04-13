@@ -28,11 +28,11 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-bold">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="admin@mail.com" required>
+                        <input type="email" name="email" class="form-control" placeholder="Email Address" required>
                     </div>
                     <div class="mb-4">
                         <label class="form-label small fw-bold">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                        <input type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" style="background: #5a35a0; border: none; border-radius: 10px;">
                         Submit

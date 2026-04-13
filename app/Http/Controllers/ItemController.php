@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
 use App\Models\Item;
 use App\Models\Category;
 use App\Models\Lending;
+use App\Exports\ItemsExport;
+use Maatwebsite\Excel\Facades\Excel; 
 
 
 class ItemController extends Controller
@@ -17,7 +20,10 @@ class ItemController extends Controller
 
     public function index()
     {
-        $items = Item::with('category')->withCount('lendings')->get();
+        $items = Item::with('category')->withCount(['lendings' => function ($query) {
+            $query->where('is_returned', false);
+        }])->get();
+
         $categories = Category::all(); 
         return view('items.index', compact('items', 'categories'));
     }
@@ -27,11 +33,11 @@ class ItemController extends Controller
      */
     
 
-public function create()
-{
-    $categories = Category::all();
-    return view('items.create', compact('categories'));
-}
+    public function create()
+    {
+        $categories = Category::all();
+        return view('items.create', compact('categories'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -110,5 +116,14 @@ public function create()
         $lendings = $item->lendings; 
         
         return view('items.lendings', compact('item', 'lendings'));
+    }
+
+    public function export()
+    {
+        if (Auth::user()->role != 'admin') {
+            return back()->with('error', 'Akses ditolak!');
+        }
+
+        return Excel::download(new ItemsExport, 'items.xlsx');
     }
 }

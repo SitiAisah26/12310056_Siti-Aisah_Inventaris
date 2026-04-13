@@ -16,17 +16,25 @@
 <body class="sb-nav-fixed">
 
 <!-- NAVBAR -->
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" href="#">Inventaris</a>
-    <button class="btn btn-link btn-sm" id="sidebarToggle">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark px-3">
+    <a class="navbar-brand fw-bold" href="#">
+        <i class="fas fa-boxes me-2"></i>INVENTARIS
+    </a>
+
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
-    <form action="{{ route('logout') }}" method="POST">
-    @csrf
-    <button type="submit" class="btn btn-primary ">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-</form>
+
+    <div class="ms-auto"></div>
+
+    <ul class="navbar-nav ms-auto ms-md-0">
+        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-primary btn-sm shadow-sm">
+                <i class="fas fa-sign-out-alt me-1"></i> Logout
+            </button>
+        </form>
+    </ul>
 </nav>
 
 <div id="layoutSidenav">
@@ -36,35 +44,63 @@
         <nav class="sb-sidenav accordion sb-sidenav-dark">
             <div class="sb-sidenav-menu">
                 <div class="nav">
+    <div class="nav">
+    <div class="sb-sidenav-menu-heading">Menu</div>
 
-                    <div class="sb-sidenav-menu-heading">Menu</div>
+    <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" href="/dashboard">
+        <i class="fas fa-tachometer-alt me-2"></i>
+        Dashboard
+    </a>
 
-                    <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" href="/dashboard">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        Dashboard
-                    </a>
+    <div class="sb-sidenav-menu-heading">Items Data</div>
 
-                    <a class="nav-link {{ request()->is('categories') ? 'active' : '' }}" href="/categories">
-                        <i class="fas fa-list me-2"></i>
-                        Categories
-                    </a>
+    @if(Auth::user()->role != 'admin')
+    <a class="nav-link {{ request()->is('lendings*') ? 'active' : '' }}" href="/lendings">
+        <i class="fas fa-sync me-2"></i>
+        Lending
+    </a>
+    @endif
+    
+    @if(Auth::user()->role == 'admin')
+    <a class="nav-link {{ request()->is('categories') ? 'active' : '' }}" href="/categories">
+        <i class="fas fa-list me-2"></i>
+        Categories
+    </a>
+    @endif
 
-                    <a class="nav-link {{ request()->is('items') ? 'active' : '' }}" href="/items">
-                        <i class="fas fa-box me-2"></i>
-                        Items
-                    </a>
+    <a class="nav-link {{ request()->is('items') ? 'active' : '' }}" href="/items">
+        <i class="fas fa-box me-2"></i>
+        Items
+    </a>
+    </div>
 
-                    <!-- <a class="nav-link {{ request()->is('lendings') ? 'active' : '' }}" href="/lendings">
-                        <i class="fas fa-handshake me-2"></i>
-                        Lending
-                    </a> -->
+    <div class="sb-sidenav-menu-heading">Account</div>
 
-                     <a class="nav-link {{ request()->is('users') ? 'active' : '' }}" href="/users">
-                        <i class="fas fa-user me-2"></i>
-                        User
-                    </a>
+    <a class="nav-link collapsed {{ request()->is('users*') ? 'active' : '' }}" href="#" 
+       data-bs-toggle="collapse" data-bs-target="#collapseUsers" 
+       aria-expanded="false" aria-controls="collapseUsers">
+        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+        Users
+        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+    </a>
 
-                </div>
+    <div class="collapse {{ request()->is('users*') ? 'show' : '' }}" id="collapseUsers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav">
+            @if(Auth::user()->role == 'admin')
+                <a class="nav-link {{ request()->is('users/admin/index') ? 'fw-bold text-white' : '' }}" href="{{ route('users.admin.index') }}">
+                    Admin
+                </a>
+                <a class="nav-link {{ request()->is('users/operator/index') ? 'fw-bold text-white' : '' }}" href="{{ route('users.operator.index') }}">
+                    Operator
+                </a>
+            @else
+                <a class="nav-link {{ request()->is('users/*/edit') ? 'fw-bold text-white' : '' }}" href="{{ route('users.edit', Auth::user()->id) }}">
+                    Edit
+                </a>
+            @endif
+        </nav>
+    </div>
+</div>
             </div>
         </nav>
     </div>

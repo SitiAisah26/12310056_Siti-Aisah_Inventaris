@@ -2,18 +2,18 @@
 
 @section('content')
 <div class="container">
-    <h4>Edit Account</h4>
+    <h4>Add Account Forms</h4>
+    <p>Please <span style="color:red">*</span> fill all input form with right value.</p>
 
-    <form action="{{ route('users.update', $user->id) }}" method="POST">
+    <form action="{{ route('users.store') }}" method="POST">
         @csrf
-        @method('PUT')
 
         <!-- NAME -->
         <div class="mb-3">
             <label>Name</label>
             <input type="text" name="name"
                 class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name', $user->name) }}">
+                value="{{ old('name') }}">
 
             @error('name')
                 <small class="text-danger">{{ $message }}</small>
@@ -25,7 +25,7 @@
             <label>Email</label>
             <input type="email" name="email"
                 class="form-control @error('email') is-invalid @enderror"
-                value="{{ old('email', $user->email) }}">
+                value="{{ old('email') }}">
 
             @error('email')
                 <small class="text-danger">{{ $message }}</small>
@@ -37,10 +37,9 @@
             <label>Role</label>
             <select name="role"
                 class="form-control @error('role') is-invalid @enderror">
-
                 <option value="">Select Role</option>
-                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>admin</option>
-                <option value="operator" {{ $user->role == 'operator' ? 'selected' : '' }}>operator</option>
+                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>admin</option>
+                <option value="operator" {{ old('role') == 'operator' ? 'selected' : '' }}>operator</option>
             </select>
 
             @error('role')
@@ -48,21 +47,10 @@
             @enderror
         </div>
 
-        <!-- NEW PASSWORD (OPTIONAL) -->
-        <div class="mb-3">
-            <label>New Password (optional)</label>
-            <input type="password" name="password"
-                class="form-control @error('password') is-invalid @enderror">
-
-            @error('password')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
         <!-- BUTTON -->
         <div class="d-flex justify-content-end">
-            <a href="{{ route('users.index') }}" class="btn btn-secondary me-2">Cancel</a>
-            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ route('users.admin.index') }}" class="btn btn-secondary me-2">Cancel</a>
+            <a href="{{ route('users.admin.index') }}" class="btn btn-primary">Submit</a>
         </div>
     </form>
 </div>

@@ -40,7 +40,7 @@
         </div>
 
         <button class="btn btn-primary">Update</button>
-        <a href="/categories" class="btn btn-secondary">Kembali</a>
+        <a href="/categories" class="btn btn-secondary">Cancel</a>
     </form>
 
 </div>

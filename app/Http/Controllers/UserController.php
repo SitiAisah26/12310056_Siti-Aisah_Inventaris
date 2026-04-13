@@ -4,36 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
+    public function indexAdmin() {
+        $users = User::where('role', 'admin')->get();
+        return view('users.admin.index', compact('users'));
+    }
 
-    public function index()
-    {
-        $users = User::all();
-        return view('users.index', compact('users'));
+    public function indexOperator() {
+        $users = User::where('role', 'operator')->get();
+        return view('users.operator.index', compact('users'));
     }
 
     public function create()
     {
-        return view('users.create');
+        return view('users.admin.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'role' => 'required',
-        ], [
-            'name.required' => 'The name field is required',
-            'email.required' => 'The email field is required',
-            'role.required' => 'The role field is required',
         ]);
 
         $prefix = substr($request->email, 0, 4);
         $count = User::count() + 1;
-
         $passwordPlain = $prefix . $count;
 
         User::create([
@@ -43,26 +43,25 @@ class UserController extends Controller
             'password' => bcrypt($passwordPlain),
         ]);
 
-        // kirim password ke alert
-        return redirect()->route('users.index')
-            ->with('success', $passwordPlain);
+        // REDIRECT BERDASARKAN ROLE
+        $target = ($request->role == 'admin') ? 'users.admin.index' : 'users.operator.index';
+        
+        return redirect()->route($target)->with('success', $passwordPlain);
     }
 
-    // 🔹 FORM EDIT
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        return view('users.admin.edit', compact('user'));
     }
 
-    // 🔹 UPDATE DATA (PASSWORD OPTIONAL)
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email,'.$id,
             'role' => 'required',
             'password' => 'nullable|min:4',
         ]);
@@ -79,16 +78,37 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil diupdate');
+        $target = ($request->role == 'admin') ? 'users.admin.index' : 'users.operator.index';
+        return redirect()->route($target)->with('success', 'User berhasil diupdate');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+        $role = $user->role; 
         $user->delete();
-
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil dihapus');
+        $target = ($role == 'admin') ? 'users.admin.index' : 'users.operator.index';
+        return redirect()->route($target)->with('success', 'User berhasil dihapus');
     }
+
+    public function export(Request $request)
+    {
+        $role = $request->query('role', 'admin');
+        $fileName = ($role == 'admin') ? 'admin-accounts.xlsx' : 'operator-accounts.xlsx';
+
+        return Excel::download(new UsersExport($role), $fileName);
+    }
+
+    public function resetPassword($id)
+{
+    $user = User::findOrFail($id);
+    $prefix = substr($user->email, 0, 4);
+    $newPass = $prefix . $user->id;
+
+    $user->update([
+        'password' => bcrypt($newPass),
+    ]);
+
+    return redirect()->back()->with('success', "Password baru dimunculkan: " . $newPass);
+}
 }

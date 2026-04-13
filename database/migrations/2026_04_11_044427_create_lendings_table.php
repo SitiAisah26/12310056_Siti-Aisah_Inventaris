@@ -10,18 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
    public function up(): void
-    {
-        Schema::create('lendings', function (Blueprint $table) {
-            $table->id(); 
-            $table->foreignId('item_id')->constrained()->onDelete('cascade'); 
-            
-            $table->string('name');     
-            $table->integer('total');     
-            $table->date('date_time');    
-            $table->string('notes')->nullable(); 
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('lendings', function (Blueprint $table) {
+        $table->id(); 
+        $table->foreignId('item_id')->constrained()->onDelete('cascade'); 
+        $table->string('name');    
+        $table->integer('total');    
+        $table->date('date_time');    
+        $table->string('notes')->nullable(); 
+        $table->boolean('is_returned')->default(false); 
+        $table->string('user_id'); 
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
