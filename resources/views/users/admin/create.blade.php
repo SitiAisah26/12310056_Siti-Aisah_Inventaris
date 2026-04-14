@@ -48,10 +48,10 @@
         </div>
 
         <!-- BUTTON -->
-        <div class="d-flex justify-content-end">
-            <a href="{{ route('users.admin.index') }}" class="btn btn-secondary me-2">Cancel</a>
-            <a href="{{ route('users.admin.index') }}" class="btn btn-primary">Submit</a>
-        </div>
+       <div class="d-flex justify-content-end">
+    <a href="{{ route('users.admin.index') }}" class="btn btn-secondary me-2">Cancel</a>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</div>
     </form>
 </div>
 @endsection

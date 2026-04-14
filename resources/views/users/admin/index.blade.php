@@ -51,12 +51,12 @@
     <div class="d-flex align-items-center gap-1">
         <a href="{{ route('users.export', ['role' => 'admin']) }}" 
            class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
-           style="background-color: #6f42c1; color: white; border: none; height: 38px; border-radius: 6px 0 0 6px;">
+           style="background-color: #6f42c1; color: white; border: none; height: 38px;">
             <i class="fas fa-file-excel me-2"></i> Export Excel
         </a>
         <a href="{{ route('users.create') }}" 
            class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
-           style="background-color: #a289d3; color: white; border: none; height: 38px; border-radius: 0 6px 6px 0;">
+           style="background-color: #a289d3; color: white; border: none; height: 38px;">
             <i class="fas fa-plus me-2"></i> Add Admin
         </a>
     </div>
@@ -87,7 +87,7 @@
                     <div class="d-flex justify-content-center gap-2">
                         <a href="/users/{{ $user->id }}/edit" class="btn btn-primary btn-sm" style="background-color: #6f42c1; border: none;">Edit</a>
                         
-                        <form action="/users/{{ $user->id }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus user ini?')">
+                        <form action="/users/{{ $user->id }}" method="POST" style="display:inline;"">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>

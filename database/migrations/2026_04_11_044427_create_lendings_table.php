@@ -16,7 +16,8 @@ return new class extends Migration
         $table->foreignId('item_id')->constrained()->onDelete('cascade'); 
         $table->string('name');    
         $table->integer('total');    
-        $table->date('date_time');    
+        $table->dateTime('date_time'); 
+        $table->dateTime('return_date')->nullable();   
         $table->string('notes')->nullable(); 
         $table->boolean('is_returned')->default(false); 
         $table->string('user_id'); 

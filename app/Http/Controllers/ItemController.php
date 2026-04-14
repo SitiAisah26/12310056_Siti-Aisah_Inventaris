@@ -18,11 +18,14 @@ class ItemController extends Controller
      */
     
 
-    public function index()
+        public function index()
     {
-        $items = Item::with('category')->withCount(['lendings' => function ($query) {
-            $query->where('is_returned', false);
-        }])->get();
+        $items = Item::with('category')
+            // menghitung TOTAL barang yang dipinjam 
+            ->withSum(['lendings as lending_total' => function ($query) {
+                $query->where('is_returned', false);
+            }], 'total') 
+            ->get();
 
         $categories = Category::all(); 
         return view('items.index', compact('items', 'categories'));
@@ -124,6 +127,6 @@ class ItemController extends Controller
             return back()->with('error', 'Akses ditolak!');
         }
 
-        return Excel::download(new ItemsExport, 'items.xlsx');
+        return Excel::download(new ItemsExport, 'items-admin.xlsx');
     }
 }

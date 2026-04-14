@@ -22,6 +22,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/items/export', [ItemController::class, 'export'])->name('items.export');
     Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+    Route::get('/lendings/export', [LendingController::class, 'export'])->name('lendings.export');
+    Route::get('/categories/export', [CategoryController::class, 'exportExcel'])->name('categories.export');
     Route::get('/users/admin', [UserController::class, 'indexAdmin'])->name('users.admin.index');
     Route::get('/users/operator', [UserController::class, 'indexOperator'])->name('users.operator.index');
     
@@ -35,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/items/{item}/lendings', [ItemController::class, 'lendings'])->name('items.lendings');
     Route::patch('/lendings/{id}/return', [LendingController::class, 'restore'])->name('lendings.restore');
+
 
     Route::resource('categories', CategoryController::class);
     Route::resource('items', ItemController::class);

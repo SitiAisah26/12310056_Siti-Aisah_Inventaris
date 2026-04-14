@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Lending;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\LendingsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LendingController extends Controller
 {
@@ -22,34 +24,39 @@ class LendingController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'item_id' => 'required',
-            'name' => 'required',
-            'total' => 'required|integer|min:1',    
-        ]);
+{
+    $request->validate([
+        'name' => 'required',
+        'items' => 'required|array'
+    ]);
 
-        $item = Item::findOrFail($request->item_id);
-    
-        $currentlyLent = Lending::where('item_id', $item->id)->where('is_returned', false)->sum('total');
+    foreach ($request->items as $data) {
+
+        $item = Item::findOrFail($data['item_id']);
+
+        $currentlyLent = Lending::where('item_id', $item->id)
+            ->where('is_returned', false)
+            ->sum('total');
+
         $availableStock = $item->total - $item->repair - $currentlyLent;
 
-        if ($availableStock < $request->total) {
-            return back()->with('error', 'Stok tidak mencukupi! Sisa stok tersedia: ' . $availableStock);
+        if ($data['total'] > $availableStock) {
+            return back()->with('error', 'total item more than available');
         }
 
         Lending::create([
-            'item_id' => $request->item_id,
+            'item_id' => $data['item_id'],
             'name' => $request->name,
-            'total' => $request->total,
+            'total' => $data['total'],
             'date_time' => now(),
             'notes' => $request->notes,
             'is_returned' => false,
-            'user_id' => Auth::user()->name 
+            'user_id' => Auth::user()->name
         ]);
-
-        return redirect()->route('lendings.index')->with('success', 'Success add new lending item!');
     }
+
+    return redirect()->route('lendings.index')->with('success', 'Success add new lending!');
+}   
 
     public function restore($id)
     {
@@ -69,9 +76,14 @@ class LendingController extends Controller
 
     public function destroy($id)
     {
-        $lending = Lending::findOrFail($id);
-        $lending->delete();
-
-        return back()->with('success', 'Success deleted one data lending!');
+    $lending = Lending::findOrFail($id);
+    $wasReturned = $lending->is_returned;
+    $lending->delete();
+    return back()->with('success', 'success deleted one data lending!');
     }
-}
+
+    public function export() 
+    {
+        return Excel::download(new LendingsExport, 'data-peminjaman.xlsx');
+    }
+}   

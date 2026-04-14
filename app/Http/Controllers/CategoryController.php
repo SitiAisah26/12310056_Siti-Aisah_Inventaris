@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Exports\CategoryExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -92,4 +94,9 @@ class CategoryController extends Controller
         Category::destroy($id);
         return redirect('/categories');
     }
+
+    public function exportExcel()
+{
+    return Excel::download(new CategoryExport, 'categories.xlsx');
+}
 }

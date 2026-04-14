@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- Header Section --}}
     <div class="mb-5 text-white rounded-bottom position-relative shadow-sm"
         style="background: url('https://picsum.photos/1200/300'); background-size: cover; background-position: center; height:220px;">
 
@@ -20,7 +19,6 @@
             </div>
 
             <div class="fw-bold fs-5">
-                {{-- Format: Bulan Tanggal, Tahun (Contoh: April 13, 2026) --}}
                 {{ now()->format('F d, Y') }}
             </div>
         </div>
@@ -36,7 +34,6 @@
 
     <div style="height:5px;"></div>
 
-    {{-- Main Content Section --}}
     <div class="container-fluid px-4">
         <h1 class="mt-4">Items</h1>
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -46,12 +43,12 @@
                     {{-- Tombol Export Excel --}}
                     <a href="{{ route('items.export') }}"
                         class="btn shadow-sm px-3 d-flex align-items-center justify-content-center"
-                        style="background-color: #6f42c1; color: white; border: none; height: 38px; border-radius: 6px 0 0 6px;">
+                        style="background-color: #6f42c1; color: white; border: none; height: 38px;">
                         <i class="fas fa-file-excel me-2"></i> Export Excel
                     </a>
                     {{-- Tombol Add Items --}}
                     <a href="/items/create" class="btn shadow-sm px-3 d-flex align-items-center justify-content-center"
-                        style="background-color: #a289d3; color: white; border: none; height: 38px; border-radius: 0 6px 6px 0;">
+                        style="background-color: #a289d3; color: white; border: none; height: 38px;">
                         <i class="fas fa-plus me-2"></i> Add Items
                     </a>
                 </div>
@@ -78,9 +75,11 @@
             <tbody>
                 @foreach ($items as $item)
                     @php
-                        // Available = Total - (Peminjaman Aktif + Rusak)
-                        // Nilai ini akan otomatis bertambah jika lending dikembalikan atau dihapus
-                        $available = $item->total - ($item->lendings_count + $item->repair);
+                        // Available = Total - peminjaman aktif + rusak, nilai otomatis nambah jika ada peminjaman baru, dikembalikan, atau item baru yang rusak
+                        // ambil hasil sum, jika tidak ada pinjaman -> 0
+                        $sedangDipinjam = $item->lending_total ?? 0;
+
+                        $available = $item->total - ($sedangDipinjam + $item->repair);
                     @endphp
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -89,28 +88,34 @@
                         <td class="text-center">{{ $item->total }}</td>
 
                         @if (Auth::user()->role == 'admin')
-                            {{-- Tampilan Admin --}}
+                            <td class="text-center">{{ $item->repair == 0 ? '-' : $item->repair }}</td>
                             <td class="text-center">
-                                {{ $item->repair == 0 ? '-' : $item->repair }}
+                                <a href="{{ route('items.lendings', $item->id) }}">{{ $sedangDipinjam }}</a>
                             </td>
                             <td class="text-center">
-                                {{-- Menggunakan kode yang kamu minta agar lebih simpel --}}
-                                {{ $item->lendings_count }}
-                            </td>
-                            <td class="text-center">
-                                <a href="/items/{{ $item->id }}/edit" class="btn btn-primary btn-sm"
-                                    style="background-color: #6f42c1; border: none;">Edit</a>
-                                <form action="/items/{{ $item->id }}" method="POST" style="display:inline;"
-                                    onsubmit="return confirm('Yakin ingin menghapus?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                                <div class="d-flex justify-content-center gap-2">
+
+                                    {{-- EDIT --}}
+                                    <a href="{{ route('items.edit', $item->id) }}"
+                                        class="btn btn-primary btn-sm text-white">
+                                        Edit
+                                    </a>
+
+                                    {{-- DELETE --}}
+                                    <form action="{{ route('items.destroy', $item->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
                             </td>
                         @else
-                            {{-- Tampilan Operator: Sesuai logika di gambar image_bb59ef.png --}}
+                            {{-- Tampilan Operator --}}
                             <td class="text-center">{{ $available }}</td>
-                            <td class="text-center">{{ $item->lendings_count }}</td>
+                            <td class="text-center">{{ $sedangDipinjam }}</td>
                         @endif
                     </tr>
                 @endforeach

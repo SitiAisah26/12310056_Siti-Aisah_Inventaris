@@ -55,7 +55,7 @@ class UserController extends Controller
         return view('users.admin.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+        public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
@@ -72,8 +72,10 @@ class UserController extends Controller
             'role' => $request->role,
         ];
 
+        // Jika input password diisi (artinya mau ganti password)
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
+            $data['is_password_changed'] = true; // Tandai sudah diubah
         }
 
         $user->update($data);
@@ -104,7 +106,7 @@ class UserController extends Controller
     $user = User::findOrFail($id);
     $prefix = substr($user->email, 0, 4);
     $newPass = $prefix . $user->id;
-
+                
     $user->update([
         'password' => bcrypt($newPass),
     ]);
