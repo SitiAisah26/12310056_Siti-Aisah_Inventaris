@@ -36,57 +36,63 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="mt-0 fs-3">Operator Accounts Table</h1>
-        <p class="text-muted">Add, delete, update <span class="text-danger">operator-accounts</span>.</p>
+        <div>
+            <h1 class="mt-0 fs-3">Operator Accounts Table</h1>
+            <p class="text-muted">List of registered <span class="text-danger">operator-accounts</span>.</p>
+        </div>
+        
+        @if(Auth::user()->role == 'admin')
+        <div class="d-flex align-items-center gap-1">
+            <a href="{{ route('users.export', ['role' => 'operator']) }}" 
+               class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
+               style="background-color: #6f42c1; color: white; border: none; height: 38px;">
+                <i class="fas fa-file-excel me-2"></i> Export Excel
+            </a>
+            <a href="{{ route('users.create') }}" 
+               class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
+               style="background-color: #a289d3; color: white; border: none; height: 38px;">
+                <i class="fas fa-plus me-2"></i> Add Operator
+            </a>
+        </div>
+        @endif
     </div>
-    
-    <div class="d-flex align-items-center gap-1">
-        <a href="{{ route('users.export', ['role' => 'operator']) }}" 
-           class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
-           style="background-color: #6f42c1; color: white; border: none; height: 38px;">
-            <i class="fas fa-file-excel me-2"></i> Export Excel
-        </a>
-        <a href="{{ route('users.create') }}" 
-           class="btn shadow-sm px-3 d-flex align-items-center justify-content-center" 
-           style="background-color: #a289d3; color: white; border: none; height: 38px;">
-            <i class="fas fa-plus me-2"></i> Add Operator
-        </a>
-    </div>
-</div>
-
     @if(session('success'))
         <div class="alert alert-success">Password Baru: {{ session('success') }}</div>
     @endif
-        <table class="table table-bordered bg-white shadow-sm">
-            <thead class="bg-light">
-                <tr>
-                    <th>No</th>
-                    <th>Name</th>
-                    <th>Email</th>
+
+    <table class="table table-bordered bg-white shadow-sm">
+        <thead class="bg-light">
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Email</th>
+                @if(Auth::user()->role == 'admin')
                     <th class="text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($users as $index => $user)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td class="text-center">
-                        <form action="{{ route('users.reset', $user->id) }}" method="POST" class="d-inline">
-                            @csrf @method('PATCH')
-                            <button type="submit" class="btn btn-warning btn-sm">Reset Password</button>
-                        </form>
-                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    
+                @endif
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($users as $index => $user)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                
+                @if(Auth::user()->role == 'admin')
+                <td class="text-center">
+                    <form action="{{ route('users.reset', $user->id) }}" method="POST" class="d-inline">
+                        @csrf @method('PATCH')
+                        <button type="submit" class="btn btn-warning btn-sm">Reset Password</button>
+                    </form>
+                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+                @endif
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

@@ -47,7 +47,7 @@ class CategoryController extends Controller
             'division' => $request->division
         ]);
 
-        return redirect('/categories');
+        return redirect('/categories')->with('success', 'Kategori baru berhasil ditambahkan!');
     }
 
     /**

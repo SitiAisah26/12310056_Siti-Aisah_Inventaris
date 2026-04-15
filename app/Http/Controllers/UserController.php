@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,7 +25,7 @@ class UserController extends Controller
         return view('users.admin.create');
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -34,19 +35,18 @@ class UserController extends Controller
 
         $prefix = substr($request->email, 0, 4);
         $count = User::count() + 1;
-        $passwordPlain = $prefix . $count;
-
+        $passwordGenerated = $prefix . $count;
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
-            'password' => bcrypt($passwordPlain),
+            'role' => $request->role, 
+            'password' => Hash::make($passwordGenerated), 
+            'password_plain' => $passwordGenerated,
         ]);
 
-        // REDIRECT BERDASARKAN ROLE
         $target = ($request->role == 'admin') ? 'users.admin.index' : 'users.operator.index';
         
-        return redirect()->route($target)->with('success', $passwordPlain);
+        return redirect()->route($target)->with('success', $passwordGenerated);
     }
 
     public function edit($id)
@@ -55,7 +55,7 @@ class UserController extends Controller
         return view('users.admin.edit', compact('user'));
     }
 
-        public function update(Request $request, $id)
+       public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
@@ -72,10 +72,9 @@ class UserController extends Controller
             'role' => $request->role,
         ];
 
-        // Jika input password diisi (artinya mau ganti password)
         if ($request->filled('password')) {
-            $data['password'] = bcrypt($request->password);
-            $data['is_password_changed'] = true; // Tandai sudah diubah
+            $data['password'] = Hash::make($request->password);
+            $data['password_plain'] = null; 
         }
 
         $user->update($data);
@@ -102,15 +101,16 @@ class UserController extends Controller
     }
 
     public function resetPassword($id)
-{
-    $user = User::findOrFail($id);
-    $prefix = substr($user->email, 0, 4);
-    $newPass = $prefix . $user->id;
-                
-    $user->update([
-        'password' => bcrypt($newPass),
-    ]);
+    {
+        $user = User::findOrFail($id);
+        $prefix = substr($user->email, 0, 4);
+        $newPass = $prefix . $user->id;
+                    
+        $user->update([
+            'password' => Hash::make($newPass),
+            'password_plain' => $newPass, 
+        ]);
 
-    return redirect()->back()->with('success', "Password baru dimunculkan: " . $newPass);
-}
+        return redirect()->back()->with('success', $newPass);
+    }
 }

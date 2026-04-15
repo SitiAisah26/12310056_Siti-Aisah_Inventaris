@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Banner Tetap di Luar Container agar Full Width --}}
 <div class="mb-5 text-white rounded-bottom position-relative shadow-sm" 
      style="background: url('https://picsum.photos/1200/300'); background-size: cover; background-position: center; height:220px;">
     
@@ -35,7 +34,6 @@
 </div>
 
 <div class="container-fluid px-4 mt-5">
-    {{-- Alert sukses ditaruh di sini agar rapi --}}
     @if(session('success'))
         <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #d1f7ec; color: #008a61;">
             <i class="fas fa-check-circle me-2"></i> Akun berhasil dibuat! <br>

@@ -9,8 +9,6 @@
 
     <form action="/categories" method="POST">
         @csrf
-
-        <!-- NAME -->
         <div class="mb-3">
             <label>Name</label>
             <input type="text" name="name" 
@@ -24,8 +22,6 @@
                 </div>
             @enderror
         </div>
-
-        <!-- DIVISION -->
         <div class="mb-3">
             <label>Division PJ</label>
             <select name="division" 

@@ -34,18 +34,21 @@
 
     <div style="height:5px;"></div>
 
-    <div class="container-fluid px-4">
+    <div class="container-fluid px-4 mt-3">
+    @if(session('success'))
+        <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #d1f7ec; color: #008a61;">
+            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+        </div>
+    @endif
         <h1 class="mt-4">Categories</h1>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <p class="text-muted">Manage your inventory <span class="text-danger">.categories</span></p>
             <div class="d-flex align-items-center gap-1">
-                {{-- Tombol Export Excel --}}
                 <a href="{{ route('categories.export') }}"
                     class="btn shadow-sm px-3 d-flex align-items-center justify-content-center"
                     style="background-color: #6f42c1; color: white; border: none; height: 38px;">
                     <i class="fas fa-file-excel me-2"></i> Export Excel
                 </a>
-                {{-- Tombol Add Items --}}
                 <a href="/categories/create" class="btn shadow-sm px-3 d-flex align-items-center justify-content-center"
                     style="background-color: #a289d3; color: white; border: none; height: 38px;">
                     <i class="fas fa-plus me-2"></i> Add Category

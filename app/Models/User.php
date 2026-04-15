@@ -14,15 +14,14 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Gunakan yang ini saja di dalam class
     protected $fillable = [
-        'name',
-        'email',
-        'role',
-        'password',
-    ];
+    'name',
+    'email',
+    'password',
+    'role',
+    'password_plain',
+];
 
-    // Password tidak akan muncul saat data di-convert ke Array/JSON
     protected $hidden = [
         'password',
         'remember_token',

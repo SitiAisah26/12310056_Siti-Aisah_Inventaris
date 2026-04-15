@@ -8,7 +8,6 @@
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
 
-        <!-- NAME -->
         <div class="mb-3">
             <label>Name</label>
             <input type="text" name="name"
@@ -20,7 +19,6 @@
             @enderror
         </div>
 
-        <!-- EMAIL -->
         <div class="mb-3">
             <label>Email</label>
             <input type="email" name="email"
@@ -32,7 +30,6 @@
             @enderror
         </div>
 
-        <!-- ROLE -->
         <div class="mb-3">
             <label>Role</label>
             <select name="role"
@@ -47,7 +44,6 @@
             @enderror
         </div>
 
-        <!-- BUTTON -->
        <div class="d-flex justify-content-end">
     <a href="{{ route('users.admin.index') }}" class="btn btn-secondary me-2">Cancel</a>
     <button type="submit" class="btn btn-primary">Submit</button>

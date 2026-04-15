@@ -2,7 +2,6 @@
 
 @section('content')
 
-<!-- HEADER BANNER -->
 <div class="mb-4 text-white rounded position-relative" 
      style="background: url('https://picsum.photos/1200/300'); background-size: cover; height:200px;">
 
@@ -17,7 +16,6 @@
         </div>
     </div>
 
-    <!-- INFO BOX -->
     <div class="bg-light text-dark p-3 mx-4 rounded position-absolute w-75" style="bottom:-20px;">
         Check menu in sidebar
     </div>

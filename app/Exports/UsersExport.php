@@ -28,14 +28,17 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithEven
         return ["Name", "Email", "Password"];
     }
 
-    public function map($user): array
-    {
-        return [
-            $user->name,
-            $user->email,
-            "This account already edited the password"
-        ];
-    }
+   public function map($user): array
+{
+    return [
+        $user->name,
+        $user->email,
+        ($user->password_plain == null) 
+            ? "This account already edited the password" 
+            : $user->password_plain
+    ];
+}
+
     public function registerEvents(): array
     {
         return [

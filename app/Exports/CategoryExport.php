@@ -19,7 +19,6 @@ class CategoryExport implements FromCollection, WithHeadings, WithEvents
             return [
                 'No' => $index + 1,
                 'Nama Kategori' => $category->name,
-                // Tambahkan kolom lain jika perlu, contoh:
                 'Tanggal Dibuat' => $category->created_at->format('d-m-Y H:i'),
             ];
         });
@@ -38,16 +37,11 @@ class CategoryExport implements FromCollection, WithHeadings, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                // Menambahkan baris kosong di paling atas untuk Judul
                 $event->sheet->insertNewRowBefore(1, 1);
                 
-                // Set teks judul di sel A1
                 $event->sheet->setCellValue('A1', 'Data Kategori Barang Inventaris');
-
-                // Merge cell dari A1 sampai C1 (sesuai jumlah kolom)
                 $event->sheet->mergeCells('A1:C1');
 
-                // Styling Judul
                 $event->sheet->getStyle('A1')->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -57,8 +51,6 @@ class CategoryExport implements FromCollection, WithHeadings, WithEvents
                         'horizontal' => 'center',
                     ],
                 ]);
-
-                // Opsional: Menebalkan header kolom (baris ke-2 sekarang)
                 $event->sheet->getStyle('A2:C2')->getFont()->setBold(true);
             },
         ];

@@ -19,10 +19,7 @@ class LendingsExport implements FromCollection, WithHeadings, WithEvents
                 'Nama Barang' => $lending->item->name ?? 'Barang Terhapus',
                 'Peminjam' => $lending->name,
 
-                // ✅ tanggal + jam pinjam
                 'Tanggal Pinjam' => Carbon::parse($lending->date_time)->format('d-m-Y H:i'),
-
-                // ✅ tanggal + jam kembali
                 'Tanggal Kembali' => $lending->return_date
                     ? Carbon::parse($lending->return_date)->format('d-m-Y H:i')
                     : '-',
